@@ -142,5 +142,10 @@
 			<artifactId>boful-soft-convert</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.boful</groupId>
+			<artifactId>fserver</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 </project>
