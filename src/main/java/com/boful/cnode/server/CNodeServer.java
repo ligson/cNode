@@ -9,7 +9,7 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
-import com.boful.net.fserver.codec.BofulCodec;
+import com.boful.cnode.server.codec.BofulCodec;
 
 public class CNodeServer {
 	/***
@@ -32,7 +32,8 @@ public class CNodeServer {
 
 		acceptor.getSessionConfig().setReadBufferSize(2048);
 		acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
-		acceptor.bind(new InetSocketAddress(9999));
+		acceptor.bind(new InetSocketAddress(8888));
 		logger.debug("starting...........");
+		System.out.println("starting...........");
 	}
 }

@@ -8,9 +8,7 @@ import org.apache.mina.core.buffer.IoBuffer;
 public class ConvertTaskProtocol {
 	public static int OPERATION = Operation.TAG_CONVERT_TASK;
 
-	/**
-	 * 命令行
-	 */
+	/** 命令行 */
 	private String cmd;
 
 	// 编码
@@ -19,6 +17,7 @@ public class ConvertTaskProtocol {
 		IoBuffer ioBuffer = IoBuffer.allocate(count);
 		ioBuffer.putInt(OPERATION);
 		byte[] cmdBuffer = cmd.getBytes("UTF-8");
+		ioBuffer.putInt(cmdBuffer.length);
 		ioBuffer.put(cmdBuffer);
 		return ioBuffer;
 	}
@@ -34,12 +33,10 @@ public class ConvertTaskProtocol {
 		if(ioBuffer.remaining() != cmdLen) {
 			return null;
 		}
-
 		ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
 		byte[] cmdBuffer = new byte[cmdLen];
 		ioBuffer.get(cmdBuffer);
 		convertTaskProtocol.setCmd(new String(cmdBuffer, "UTF-8"));
-
 		return convertTaskProtocol;
 	}
 
@@ -47,6 +44,8 @@ public class ConvertTaskProtocol {
 		// TAG+CMDBUFFERLEN+CMDBUFFER
 		try {
 			byte[] cmdBuffer = cmd.getBytes("UTF-8");
+			
+			System.out.println(cmdBuffer.length);
 
 			return 4 + 4 + cmdBuffer.length;
 

@@ -27,13 +27,14 @@ public class NodeServerHandler extends IoHandlerAdapter {
 	public void sessionCreated(IoSession session) throws Exception {
 		super.sessionCreated(session);
 		sessions.add(session);
-
+		System.out.println("connect ......");
 	}
 
 	@Override
 	public void sessionClosed(IoSession session) throws Exception {
 		super.sessionClosed(session);
 		sessions.remove(session);
+		System.out.println("disconnect ......");
 	}
 
 	@Override
@@ -82,13 +83,6 @@ public class NodeServerHandler extends IoHandlerAdapter {
 			File diskFile = null;
 			if (commandLine.hasOption("disk")) {
 				String arg = commandLine.getOptionValue("disk");
-				if (arg == null || arg.length() == 0) {
-					convertStateProtocol
-							.setState(ConvertStateProtocol.STATE_FAIL);
-					convertStateProtocol.setMessage("没有设置disk参数！");
-					return convertStateProtocol;
-				}
-
 				diskFile = new File(arg);
 				if (!diskFile.exists()) {
 					convertStateProtocol
@@ -96,18 +90,16 @@ public class NodeServerHandler extends IoHandlerAdapter {
 					convertStateProtocol.setMessage("文件" + arg + "不存在！");
 					return convertStateProtocol;
 				}
+			} else {
+				convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
+				convertStateProtocol.setMessage("没有设置disk参数！");
+				return convertStateProtocol;
 			}
 
 			// 转码文件
 			File destFile = null;
 			if (commandLine.hasOption("dest")) {
 				String arg = commandLine.getOptionValue("dest");
-				if (arg == null || arg.length() == 0) {
-					convertStateProtocol
-							.setState(ConvertStateProtocol.STATE_FAIL);
-					convertStateProtocol.setMessage("没有设置dest参数！");
-					return convertStateProtocol;
-				}
 				destFile = new File(arg);
 				File path = new File(destFile.getParent());
 				if (!path.exists()) {
@@ -116,6 +108,10 @@ public class NodeServerHandler extends IoHandlerAdapter {
 					convertStateProtocol.setMessage("文件" + arg + "的路径错误！");
 					return convertStateProtocol;
 				}
+			} else {
+				convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
+				convertStateProtocol.setMessage("没有设置dest参数！");
+				return convertStateProtocol;
 			}
 
 			// 视频码率
@@ -235,11 +231,6 @@ public class NodeServerHandler extends IoHandlerAdapter {
 		}
 
 		return convertStateProtocol;
-	}
-
-	@Override
-	public void messageSent(IoSession session, Object message) throws Exception {
-		super.messageSent(session, message);
 	}
 
 }
