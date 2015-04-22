@@ -5,9 +5,9 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 
+import com.boful.cnode.protocol.ConvertStateProtocol;
 import com.boful.cnode.protocol.ConvertTaskProtocol;
 import com.boful.cnode.protocol.Operation;
-import com.boful.net.fserver.protocol.TransferProtocol;
 
 public class BofulDecoder extends CumulativeProtocolDecoder {
 
@@ -21,6 +21,7 @@ public class BofulDecoder extends CumulativeProtocolDecoder {
 				return false;
 			}
 			int operation = inBuffer.getInt();
+			// 转码任务
 			if (operation == Operation.TAG_CONVERT_TASK) {
 				ConvertTaskProtocol transferProtocol = ConvertTaskProtocol
 						.parse(inBuffer);
@@ -29,6 +30,18 @@ public class BofulDecoder extends CumulativeProtocolDecoder {
 					return false;
 				} else {
 					out.write(transferProtocol);
+					return true;
+				}
+				
+				// 转码状态
+			} else if (operation == Operation.TAG_CONVERT_STATE) {
+				ConvertStateProtocol convertStateProtocol = ConvertStateProtocol
+						.parse(inBuffer);
+				if (convertStateProtocol == null) {
+					inBuffer.reset();
+					return false;
+				} else {
+					out.write(convertStateProtocol);
 					return true;
 				}
 			}
