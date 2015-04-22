@@ -32,7 +32,7 @@ public class CNodeServer {
 
 		acceptor.getSessionConfig().setReadBufferSize(2048);
 		acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
-		acceptor.bind(new InetSocketAddress(9000));
+		acceptor.bind(new InetSocketAddress(9999));
 		logger.debug("starting...........");
 	}
 }
