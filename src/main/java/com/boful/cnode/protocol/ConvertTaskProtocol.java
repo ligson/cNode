@@ -29,10 +29,13 @@ public class ConvertTaskProtocol {
 		if (ioBuffer.remaining() < 4) {
 			return null;
 		}
+		
+		int cmdLen = ioBuffer.getInt();
+		if(ioBuffer.remaining() != cmdLen) {
+			return null;
+		}
 
 		ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
-
-		int cmdLen = ioBuffer.getInt();
 		byte[] cmdBuffer = new byte[cmdLen];
 		ioBuffer.get(cmdBuffer);
 		convertTaskProtocol.setCmd(new String(cmdBuffer, "UTF-8"));
