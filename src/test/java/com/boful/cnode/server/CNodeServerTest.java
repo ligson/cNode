@@ -14,67 +14,67 @@ import com.boful.cnode.server.codec.BofulCodec;
 
 public class CNodeServerTest {
 
-	public static void main(String[] args) {
-		CNodeServerTest test = new CNodeServerTest();
-		try {
-			test.connect("127.0.0.1", 8888);
-			test.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		test.disconnect();
-	}
+    public static void main(String[] args) {
+        CNodeServerTest test = new CNodeServerTest();
+        try {
+            test.connect("127.0.0.1", 8888);
+            test.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	private ConnectFuture cf;
-	private NioSocketConnector connector = new NioSocketConnector();
-	private Logger logger = Logger.getLogger(CNodeServerTest.class);
-	/***
-	 * 解码器定义
-	 */
-	private static BofulCodec bofulCodec = new BofulCodec();
-	private static ClientHandler clientHandler = new ClientHandler();
+        test.disconnect();
+    }
 
-	public void connect(String address, int port) {
-		logger.debug("连接到：" + address + ":" + port);
-		
-		// 创建接受数据的过滤器
-		DefaultIoFilterChainBuilder chain = connector.getFilterChain();
+    private ConnectFuture cf;
+    private NioSocketConnector connector = new NioSocketConnector();
+    private Logger logger = Logger.getLogger(CNodeServerTest.class);
+    /***
+     * 解码器定义
+     */
+    private static BofulCodec bofulCodec = new BofulCodec();
+    private static ClientHandler clientHandler = new ClientHandler();
 
-		// 设定这个过滤器将一行一行(/r/n)的读取数据
-		chain.addLast("codec", new ProtocolCodecFilter(bofulCodec));
+    public void connect(String address, int port) {
+        logger.debug("连接到：" + address + ":" + port);
 
-		// 客户端的消息处理器：一个SamplMinaServerHander对象
-		connector.setHandler(clientHandler);
-		
-		// set connect timeout
-		connector.setConnectTimeoutMillis(60 * 60 * 1000);
-		// 连接到服务器：
-		cf = connector.connect(new InetSocketAddress(address, port));
-		cf.awaitUninterruptibly();
-	}
+        // 创建接受数据的过滤器
+        DefaultIoFilterChainBuilder chain = connector.getFilterChain();
 
-	public void send(String diskFile, String destFile) throws Exception {
-		IoSession ioSession = cf.getSession();
-		if (ioSession != null) {
-			ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
-			
-			// 命令行
-			String cmd = "";
-			cmd += " -i "+diskFile;
-			cmd += " -o "+destFile;
-			cmd += " -vb 30000";
-			cmd += " -ab 20000";
-			cmd += " -size 300x200";
-			convertTaskProtocol.setCmd(cmd);
-			ioSession.write(convertTaskProtocol);
-		} else {
-			throw new Exception("未连接上");
-		}
+        // 设定这个过滤器将一行一行(/r/n)的读取数据
+        chain.addLast("codec", new ProtocolCodecFilter(bofulCodec));
 
-	}
-	
-	public void disconnect(){
-		connector.dispose();
-	}
+        // 客户端的消息处理器：一个SamplMinaServerHander对象
+        connector.setHandler(clientHandler);
+
+        // set connect timeout
+        connector.setConnectTimeoutMillis(60 * 60 * 1000);
+        // 连接到服务器：
+        cf = connector.connect(new InetSocketAddress(address, port));
+        cf.awaitUninterruptibly();
+    }
+
+    public void send(String diskFile, String destFile) throws Exception {
+        IoSession ioSession = cf.getSession();
+        if (ioSession != null) {
+            ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
+
+            // 命令行
+            String cmd = "";
+            cmd += " -i " + diskFile;
+            cmd += " -o " + destFile;
+            cmd += " -vb 30000";
+            cmd += " -ab 20000";
+            cmd += " -size 300x200";
+            convertTaskProtocol.setCmd(cmd);
+            ioSession.write(convertTaskProtocol);
+        } else {
+            throw new Exception("未连接上");
+        }
+
+    }
+
+    public void disconnect() {
+        connector.dispose();
+    }
 }
