@@ -18,7 +18,6 @@ public class ClientHandler extends IoHandlerAdapter {
     @Override
     public void sessionCreated(IoSession session) throws Exception {
         sessions.add(session);
-
     }
 
     @Override
@@ -35,5 +34,4 @@ public class ClientHandler extends IoHandlerAdapter {
     public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
         cause.printStackTrace();
     }
-
 }

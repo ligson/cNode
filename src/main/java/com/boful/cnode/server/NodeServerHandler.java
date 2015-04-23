@@ -1,7 +1,6 @@
 package com.boful.cnode.server;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,19 +9,19 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
-import org.dom4j.DocumentException;
 
+import com.boful.cnode.event.AudioTranscodeEvent;
 import com.boful.cnode.protocol.ConvertStateProtocol;
 import com.boful.cnode.protocol.ConvertTaskProtocol;
 import com.boful.cnode.protocol.Operation;
 import com.boful.common.file.utils.FileType;
 import com.boful.convert.core.ConvertProviderConfig;
 import com.boful.convert.core.impl.BofulConvertProvider;
+import com.boful.convert.core.impl.utils.ImageMagickUtils;
 import com.boful.convert.model.DiskFile;
 
 public class NodeServerHandler extends IoHandlerAdapter {
@@ -108,6 +107,7 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 if (!path.exists()) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
                     convertStateProtocol.setMessage("文件" + arg + "的路径错误！");
+                    session.write(convertStateProtocol);
                     session.write(convertStateProtocol);
                     return;
                 }
@@ -215,8 +215,9 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 ConvertProviderConfig config = new ConvertProviderConfig();
                 config.init(new File("e:/convert.xml"));
                 BofulConvertProvider bofulConvertProvider = new BofulConvertProvider(config);
+                AudioTranscodeEvent event = new AudioTranscodeEvent(session);
                 bofulConvertProvider.transcodeVideo(new DiskFile(diskFile), new DiskFile(destFile), width, height,
-                        videoBitrate, audioBitrate, null, null);
+                        videoBitrate, audioBitrate, event, null);
 
                 // 音频转码
             } else if (FileType.isAudio(diskFile.getName())) {
@@ -233,6 +234,14 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     return;
                 }
 
+                // 转码开始
+                ConvertProviderConfig config = new ConvertProviderConfig();
+                config.init(new File("e:/convert.xml"));
+                BofulConvertProvider bofulConvertProvider = new BofulConvertProvider(config);
+                AudioTranscodeEvent event = new AudioTranscodeEvent(session);
+                bofulConvertProvider.transcodeAudio(new DiskFile(diskFile), new DiskFile(destFile), audioBitrate,
+                        event, null);
+
                 // 文档转码
             } else if (FileType.isDocument(diskFile.getName())) {
                 if (!FileType.isDocument(destFile.getName())) {
@@ -242,6 +251,12 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     return;
                 }
 
+                ConvertProviderConfig config = new ConvertProviderConfig();
+                config.init(new File("e:/convert.xml"));
+                BofulConvertProvider bofulConvertProvider = new BofulConvertProvider(config);
+                AudioTranscodeEvent event = new AudioTranscodeEvent(session);
+                bofulConvertProvider.transcode2PDF(new DiskFile(diskFile), new DiskFile(destFile), event, null);
+
                 // 图片转码
             } else if (FileType.isImage(diskFile.getName())) {
                 if (!FileType.isImage(destFile.getName())) {
@@ -250,6 +265,14 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     session.write(convertStateProtocol);
                     return;
                 }
+                
+                ConvertProviderConfig config = new ConvertProviderConfig();
+                config.init(new File("e:/convert.xml"));
+                String imageMagickBaseHome = config.getHosts().get(0).getParams().get("imageMagickSearchPath");
+                ImageMagickUtils.compress(diskFile, destFile, imageMagickBaseHome);
+                convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
+                convertStateProtocol.setMessage("图片文件"+diskFile+"转码成功！");
+                session.write(convertStateProtocol);
 
                 // 其他类型文件
             } else {
@@ -259,7 +282,7 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 return;
             }
 
-        } catch (ParseException | IOException | DocumentException e) {
+        } catch (Exception e) {
             convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
             convertStateProtocol.setMessage(e.getMessage());
             session.write(convertStateProtocol);
@@ -267,4 +290,10 @@ public class NodeServerHandler extends IoHandlerAdapter {
         }
     }
 
+    @Override
+    public void messageSent(IoSession session, Object message) throws Exception {
+        super.messageSent(session, message);
+        System.out.println(message.toString());
+        session.close(true);
+    }
 }
