@@ -28,6 +28,7 @@ public class ClientHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
+
         Field field = null;
         try {
             field = message.getClass().getDeclaredField("OPERATION");

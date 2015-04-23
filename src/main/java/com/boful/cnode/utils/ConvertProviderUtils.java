@@ -8,10 +8,10 @@ import org.dom4j.DocumentException;
 
 import com.boful.convert.core.ConvertProviderConfig;
 
-public class ConvertProviderConfigUtils {
+public class ConvertProviderUtils {
 
     private static ConvertProviderConfig config = null;
-    private static Logger logger = Logger.getLogger(ConvertProviderConfigUtils.class);
+    private static Logger logger = Logger.getLogger(ConvertProviderUtils.class);
 
     public static void initConvertProviderConfig() throws IOException, DocumentException {
         ConvertProviderConfig config = new ConvertProviderConfig();

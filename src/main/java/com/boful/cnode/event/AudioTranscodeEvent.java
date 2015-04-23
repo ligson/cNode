@@ -1,5 +1,6 @@
 package com.boful.cnode.event;
 
+import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cnode.protocol.ConvertStateProtocol;
@@ -32,6 +33,7 @@ public class AudioTranscodeEvent implements TranscodeEvent {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
         convertStateProtocol.setMessage("转码开始！");
+        System.out.println("转码开始！");
         session.write(convertStateProtocol);
     }
 
@@ -47,7 +49,7 @@ public class AudioTranscodeEvent implements TranscodeEvent {
     public void onTranscode(DiskFile diskFile, int process, String jobId) {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
-        convertStateProtocol.setMessage("转码进度"+process+"%");
+        convertStateProtocol.setMessage("转码进度" + process + "%");
         session.write(convertStateProtocol);
     }
 
@@ -57,5 +59,6 @@ public class AudioTranscodeEvent implements TranscodeEvent {
         convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
         convertStateProtocol.setMessage(errorMessage);
         session.write(convertStateProtocol);
+        System.out.println("onTranscodeFail");
     }
 }

@@ -9,7 +9,7 @@ import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 import com.boful.cnode.server.codec.BofulCodec;
-import com.boful.cnode.utils.ConvertProviderConfigUtils;
+import com.boful.cnode.utils.ConvertProviderUtils;
 
 public class CNodeServer {
     /***
@@ -35,6 +35,6 @@ public class CNodeServer {
         logger.debug("starting...........");
 
         // 初始化ConvertProviderConfig
-        ConvertProviderConfigUtils.initConvertProviderConfig();
+        ConvertProviderUtils.initConvertProviderConfig();
     }
 }

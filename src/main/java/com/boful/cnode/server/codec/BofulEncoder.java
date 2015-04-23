@@ -15,6 +15,7 @@ public class BofulEncoder extends ProtocolEncoderAdapter {
         try {
             method = message.getClass().getMethod("toByteArray");
         } catch (Exception e) {
+            e.printStackTrace();
         }
         if (method != null) {
             Object object = method.invoke(message);
@@ -22,7 +23,6 @@ public class BofulEncoder extends ProtocolEncoderAdapter {
                 IoBuffer ioBuffer2 = (IoBuffer) object;
                 ioBuffer2.flip();
                 out.write(ioBuffer2);
-
             }
         } else {
             if (message instanceof IoBuffer) {

@@ -21,7 +21,6 @@ import com.boful.cnode.protocol.Operation;
 import com.boful.common.file.utils.FileType;
 import com.boful.convert.core.ConvertProviderConfig;
 import com.boful.convert.core.impl.BofulConvertProvider;
-import com.boful.convert.core.impl.utils.FFMpegUtils;
 import com.boful.convert.core.impl.utils.ImageMagickUtils;
 import com.boful.convert.model.DiskFile;
 
@@ -219,15 +218,7 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 AudioTranscodeEvent event = new AudioTranscodeEvent(session);
                 bofulConvertProvider.transcodeVideo(new DiskFile(diskFile), new DiskFile(destFile), width, height,
                         videoBitrate, audioBitrate, event, "job1");
-                
-                // TODO 测试 start
-             /*   
-                FFMpegUtils.transcode("E:/transcode/ffmpeg/bin/ffmpeg.exe", "E:/transcode/MediaInfo/MediaInfo",
-                        diskFile.getAbsolutePath(), destFile.getAbsolutePath(), width + "x"
-                                + height, event,"job1");
-                System.out.println("over!");*/
-                // TODO 测试 end
-                
+
                 // 音频转码
             } else if (FileType.isAudio(diskFile.getName())) {
                 if (audioBitrate == 0) {
@@ -274,13 +265,13 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     session.write(convertStateProtocol);
                     return;
                 }
-                
+
                 ConvertProviderConfig config = new ConvertProviderConfig();
                 config.init(new File("e:/convert.xml"));
                 String imageMagickBaseHome = config.getHosts().get(0).getParams().get("imageMagickSearchPath");
                 ImageMagickUtils.compress(diskFile, destFile, imageMagickBaseHome);
                 convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                convertStateProtocol.setMessage("图片文件"+diskFile+"转码成功！");
+                convertStateProtocol.setMessage("图片文件" + diskFile + "转码成功！");
                 session.write(convertStateProtocol);
 
                 // 其他类型文件
@@ -302,6 +293,5 @@ public class NodeServerHandler extends IoHandlerAdapter {
     @Override
     public void messageSent(IoSession session, Object message) throws Exception {
         super.messageSent(session, message);
-        System.out.println("messageSent");
     }
 }
