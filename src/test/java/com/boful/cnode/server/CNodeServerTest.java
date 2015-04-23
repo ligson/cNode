@@ -15,8 +15,7 @@ import com.boful.cnode.server.codec.BofulCodec;
 public class CNodeServerTest {
 
     public static void main(String[] args) {
-        
-        /*
+
         // 视频转码
         CNodeServerTest test1 = new CNodeServerTest();
         try {
@@ -39,18 +38,16 @@ public class CNodeServerTest {
         CNodeServerTest test3 = new CNodeServerTest();
         try {
             test3.connect("127.0.0.1", 9000);
-            test3.send("e:/mmd.mp3", "e:/test/mmd2.mp3");
+            test3.send("e:/mmd.mp3", "e:/test/mmd2.wav");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        
-*/
+
         // 文档转码
         CNodeServerTest test4 = new CNodeServerTest();
         try {
             test4.connect("127.0.0.1", 9000);
-            test4.send("e:/aaa.txt", "e:/test/aaa2.pdf");
+            test4.send("e:/aaa.txt", "e:/test/aaa2.swf");
         } catch (Exception e) {
             e.printStackTrace();
         }
