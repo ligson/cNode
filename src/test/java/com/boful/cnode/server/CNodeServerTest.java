@@ -14,10 +14,15 @@ import com.boful.cnode.server.codec.BofulCodec;
 
 public class CNodeServerTest {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		CNodeServerTest test = new CNodeServerTest();
-		test.connect("127.0.0.1", 8888);
-		test.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
+		try {
+			test.connect("127.0.0.1", 8888);
+			test.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		test.disconnect();
 	}
 
@@ -49,12 +54,19 @@ public class CNodeServerTest {
 		cf.awaitUninterruptibly();
 	}
 
-	public void send(String file, String destFile) throws Exception {
+	public void send(String diskFile, String destFile) throws Exception {
 		IoSession ioSession = cf.getSession();
 		if (ioSession != null) {
 			ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
-			convertTaskProtocol.setCmd(file+destFile);
-			System.out.println(convertTaskProtocol.getCmd());
+			
+			// 命令行
+			String cmd = "";
+			cmd += " -i "+diskFile;
+			cmd += " -o "+destFile;
+			cmd += " -vb 30000";
+			cmd += " -ab 20000";
+			cmd += " -size 300x200";
+			convertTaskProtocol.setCmd(cmd);
 			ioSession.write(convertTaskProtocol);
 		} else {
 			throw new Exception("未连接上");
