@@ -15,26 +15,54 @@ import com.boful.cnode.server.codec.BofulCodec;
 public class CNodeServerTest {
 
     public static void main(String[] args) {
-        CNodeServerTest test = new CNodeServerTest();
+        
+        /*
+        // 视频转码
+        CNodeServerTest test1 = new CNodeServerTest();
         try {
-            test.connect("127.0.0.1", 9000);
-            // 视频转码
-            test.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
-            
-            // 图片转码
-            // test.send("e:/Koala.jpg", "e:/test/Koala1.jpg");
+            test1.connect("127.0.0.1", 9000);
+            test1.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-       // test.disconnect();
+        // 图片转码
+        CNodeServerTest test2 = new CNodeServerTest();
+        try {
+            test2.connect("127.0.0.1", 9000);
+            test2.send("e:/Koala.jpg", "e:/test/Koala1.jpg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 音频转码
+        CNodeServerTest test3 = new CNodeServerTest();
+        try {
+            test3.connect("127.0.0.1", 9000);
+            test3.send("e:/mmd.mp3", "e:/test/mmd2.mp3");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        
+*/
+        // 文档转码
+        CNodeServerTest test4 = new CNodeServerTest();
+        try {
+            test4.connect("127.0.0.1", 9000);
+            test4.send("e:/ttt.doc", "e:/test/ttt.pdf");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // test.disconnect();
     }
 
     private ConnectFuture cf;
     private NioSocketConnector connector = new NioSocketConnector();
     private Logger logger = Logger.getLogger(CNodeServerTest.class);
     private IoSession ioSession;
-    
+
     /***
      * 解码器定义
      */
