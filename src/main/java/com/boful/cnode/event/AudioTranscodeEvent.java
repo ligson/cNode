@@ -14,10 +14,6 @@ public class AudioTranscodeEvent implements TranscodeEvent {
         this.session = session;
     }
 
-    public String getString() {
-        return "12345";
-    }
-
     @Override
     public void onSubmitFail(DiskFile diskFile, String errorMessage, String jobId) {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
@@ -38,7 +34,6 @@ public class AudioTranscodeEvent implements TranscodeEvent {
 
     @Override
     public void onTranscodeSuccess(DiskFile diskFile, DiskFile destFile, String jobId) {
-        System.out.println("onTranscodeSuccess");
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
         convertStateProtocol.setMessage("转码完成");
