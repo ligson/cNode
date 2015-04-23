@@ -18,9 +18,8 @@ import com.boful.cnode.event.AudioTranscodeEvent;
 import com.boful.cnode.protocol.ConvertStateProtocol;
 import com.boful.cnode.protocol.ConvertTaskProtocol;
 import com.boful.cnode.protocol.Operation;
+import com.boful.cnode.utils.ConvertProviderUtils;
 import com.boful.common.file.utils.FileType;
-import com.boful.convert.core.ConvertProviderConfig;
-import com.boful.convert.core.impl.BofulConvertProvider;
 import com.boful.convert.core.impl.utils.ImageMagickUtils;
 import com.boful.convert.model.DiskFile;
 
@@ -75,10 +74,22 @@ public class NodeServerHandler extends IoHandlerAdapter {
         options.addOption("vb", "videoBitrate", true, "");
         options.addOption("ab", "audioBitrate", true, "");
         options.addOption("size", "size", true, "");
+        options.addOption("id", "jobId", true, "");
 
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         try {
             CommandLine commandLine = parser.parse(options, cmdArgs);
+
+            // jobId
+            String jobId = null;
+            if (commandLine.hasOption("id")) {
+                jobId = commandLine.getOptionValue("id");
+            } else {
+                convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
+                convertStateProtocol.setMessage("没有设置id参数！");
+                session.write(convertStateProtocol);
+                return;
+            }
 
             // 元文件
             File diskFile = null;
@@ -212,12 +223,9 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 }
 
                 // 转码开始
-                ConvertProviderConfig config = new ConvertProviderConfig();
-                config.init(new File("e:/convert.xml"));
-                BofulConvertProvider bofulConvertProvider = new BofulConvertProvider(config);
                 AudioTranscodeEvent event = new AudioTranscodeEvent(session);
-                bofulConvertProvider.transcodeVideo(new DiskFile(diskFile), new DiskFile(destFile), width, height,
-                        videoBitrate, audioBitrate, event, "job1");
+                ConvertProviderUtils.getBofulConvertProvider().transcodeVideo(new DiskFile(diskFile),
+                        new DiskFile(destFile), width, height, videoBitrate, audioBitrate, event, jobId);
 
                 // 音频转码
             } else if (FileType.isAudio(diskFile.getName())) {
@@ -235,12 +243,9 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 }
 
                 // 转码开始
-                ConvertProviderConfig config = new ConvertProviderConfig();
-                config.init(new File("e:/convert.xml"));
-                BofulConvertProvider bofulConvertProvider = new BofulConvertProvider(config);
                 AudioTranscodeEvent event = new AudioTranscodeEvent(session);
-                bofulConvertProvider.transcodeAudio(new DiskFile(diskFile), new DiskFile(destFile), audioBitrate,
-                        event, null);
+                ConvertProviderUtils.getBofulConvertProvider().transcodeAudio(new DiskFile(diskFile),
+                        new DiskFile(destFile), audioBitrate, event, jobId);
 
                 // 文档转码
             } else if (FileType.isDocument(diskFile.getName())) {
@@ -251,11 +256,10 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     return;
                 }
 
-                ConvertProviderConfig config = new ConvertProviderConfig();
-                config.init(new File("e:/convert.xml"));
-                BofulConvertProvider bofulConvertProvider = new BofulConvertProvider(config);
+                // 转码开始
                 AudioTranscodeEvent event = new AudioTranscodeEvent(session);
-                bofulConvertProvider.transcode2PDF(new DiskFile(diskFile), new DiskFile(destFile), event, null);
+                ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
+                        new DiskFile(destFile), event, jobId);
 
                 // 图片转码
             } else if (FileType.isImage(diskFile.getName())) {
@@ -266,12 +270,11 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     return;
                 }
 
-                ConvertProviderConfig config = new ConvertProviderConfig();
-                config.init(new File("e:/convert.xml"));
-                String imageMagickBaseHome = config.getHosts().get(0).getParams().get("imageMagickSearchPath");
+                String imageMagickBaseHome = ConvertProviderUtils.getConfig().getHosts().get(0).getParams()
+                        .get("imageMagickSearchPath");
                 ImageMagickUtils.compress(diskFile, destFile, imageMagickBaseHome);
                 convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                convertStateProtocol.setMessage("图片文件" + diskFile + "转码成功！");
+                convertStateProtocol.setMessage("文件" + diskFile + "转码成功！");
                 session.write(convertStateProtocol);
 
                 // 其他类型文件
@@ -283,6 +286,7 @@ public class NodeServerHandler extends IoHandlerAdapter {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
             convertStateProtocol.setMessage(e.getMessage());
             session.write(convertStateProtocol);
