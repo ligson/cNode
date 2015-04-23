@@ -26,6 +26,7 @@ public class ConvertStateProtocol {
         IoBuffer ioBuffer = IoBuffer.allocate(count);
         ioBuffer.putInt(OPERATION);
         byte[] messageBuffer = message.getBytes("UTF-8");
+        ioBuffer.putInt(messageBuffer.length);
         ioBuffer.putInt(state);
         ioBuffer.put(messageBuffer);
         return ioBuffer;

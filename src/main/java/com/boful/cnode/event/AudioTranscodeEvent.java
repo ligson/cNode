@@ -29,19 +29,26 @@ public class AudioTranscodeEvent implements TranscodeEvent {
 
     @Override
     public void onStartTranscode(DiskFile diskFile, String jobId) {
-        System.out.println("onStartTranscode");
+        ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
+        convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
+        convertStateProtocol.setMessage("转码开始！");
+        session.write(convertStateProtocol);
     }
 
     @Override
     public void onTranscodeSuccess(DiskFile diskFile, DiskFile destFile, String jobId) {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
-        convertStateProtocol.setMessage("转码完成");
+        convertStateProtocol.setMessage("转码完成！");
         session.write(convertStateProtocol);
     }
 
     @Override
     public void onTranscode(DiskFile diskFile, int process, String jobId) {
+        ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
+        convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
+        convertStateProtocol.setMessage("转码进度"+process+"%");
+        session.write(convertStateProtocol);
     }
 
     @Override

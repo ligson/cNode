@@ -293,7 +293,6 @@ public class NodeServerHandler extends IoHandlerAdapter {
     @Override
     public void messageSent(IoSession session, Object message) throws Exception {
         super.messageSent(session, message);
-        System.out.println(message.toString());
-        session.close(true);
+        System.out.println("messageSent");
     }
 }
