@@ -44,11 +44,7 @@ public class ConvertTaskProtocol {
 		// TAG+CMDBUFFERLEN+CMDBUFFER
 		try {
 			byte[] cmdBuffer = cmd.getBytes("UTF-8");
-			
-			System.out.println(cmdBuffer.length);
-
 			return 4 + 4 + cmdBuffer.length;
-
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
