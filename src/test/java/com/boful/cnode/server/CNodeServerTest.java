@@ -17,8 +17,9 @@ public class CNodeServerTest {
     public static void main(String[] args) {
         CNodeServerTest test = new CNodeServerTest();
         try {
-            test.connect("127.0.0.1", 8888);
-            test.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
+            test.connect("127.0.0.1", 9000);
+            // test.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
+            test.send("e:/Koala.jpg", "e:/test/Koala1.jpg");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -29,6 +30,8 @@ public class CNodeServerTest {
     private ConnectFuture cf;
     private NioSocketConnector connector = new NioSocketConnector();
     private Logger logger = Logger.getLogger(CNodeServerTest.class);
+    private IoSession ioSession;
+    
     /***
      * 解码器定义
      */
@@ -55,7 +58,7 @@ public class CNodeServerTest {
     }
 
     public void send(String diskFile, String destFile) throws Exception {
-        IoSession ioSession = cf.getSession();
+        ioSession = cf.getSession();
         if (ioSession != null) {
             ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
 
@@ -75,6 +78,7 @@ public class CNodeServerTest {
     }
 
     public void disconnect() {
+        ioSession.getCloseFuture().awaitUninterruptibly();
         connector.dispose();
     }
 }
