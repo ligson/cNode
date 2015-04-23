@@ -18,8 +18,8 @@ public class CNodeServerTest {
         CNodeServerTest test = new CNodeServerTest();
         try {
             test.connect("127.0.0.1", 9000);
-            // test.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
-            test.send("e:/Koala.jpg", "e:/test/Koala1.jpg");
+            test.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
+            // test.send("e:/Koala.jpg", "e:/test/Koala1.jpg");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,6 +78,7 @@ public class CNodeServerTest {
     }
 
     public void disconnect() {
+        System.out.println("disconnect");
         ioSession.getCloseFuture().awaitUninterruptibly();
         connector.dispose();
     }
