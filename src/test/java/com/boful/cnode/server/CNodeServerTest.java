@@ -18,13 +18,16 @@ public class CNodeServerTest {
         CNodeServerTest test = new CNodeServerTest();
         try {
             test.connect("127.0.0.1", 9000);
+            // 视频转码
             test.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
+            
+            // 图片转码
             // test.send("e:/Koala.jpg", "e:/test/Koala1.jpg");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        test.disconnect();
+       // test.disconnect();
     }
 
     private ConnectFuture cf;
@@ -63,7 +66,7 @@ public class CNodeServerTest {
             ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
 
             // 命令行
-            String cmd = "";
+            String cmd = "-id job_0001";
             cmd += " -i " + diskFile;
             cmd += " -o " + destFile;
             cmd += " -vb 30000";
@@ -71,6 +74,7 @@ public class CNodeServerTest {
             cmd += " -size 300x200";
             convertTaskProtocol.setCmd(cmd);
             ioSession.write(convertTaskProtocol);
+
         } else {
             throw new Exception("未连接上");
         }
