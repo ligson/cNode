@@ -20,6 +20,7 @@ import com.boful.cnode.protocol.ConvertTaskProtocol;
 import com.boful.cnode.protocol.Operation;
 import com.boful.cnode.utils.ConvertProviderUtils;
 import com.boful.common.file.utils.FileType;
+import com.boful.common.file.utils.FileUtils;
 import com.boful.convert.core.impl.utils.ImageMagickUtils;
 import com.boful.convert.model.DiskFile;
 
@@ -249,9 +250,10 @@ public class NodeServerHandler extends IoHandlerAdapter {
 
                 // 文档转码
             } else if (FileType.isDocument(diskFile.getName())) {
-                if (!FileType.isDocument(destFile.getName())) {
+                String sufix = FileUtils.getFileSufix(destFile.getName());
+                if (!sufix.toUpperCase().equals("PDF")) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("参数o不是音频文件！");
+                    convertStateProtocol.setMessage("参数o不是PDF文件！");
                     session.write(convertStateProtocol);
                     return;
                 }
@@ -265,7 +267,7 @@ public class NodeServerHandler extends IoHandlerAdapter {
             } else if (FileType.isImage(diskFile.getName())) {
                 if (!FileType.isImage(destFile.getName())) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("参数o不是音频文件！");
+                    convertStateProtocol.setMessage("参数o不是图片文件！");
                     session.write(convertStateProtocol);
                     return;
                 }
