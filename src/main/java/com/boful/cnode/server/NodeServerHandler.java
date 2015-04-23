@@ -322,8 +322,8 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 String imageMagickBaseHome = ConvertProviderUtils.getConfig().getHosts().get(0).getParams()
                         .get("imageMagickSearchPath");
                 ImageMagickUtils.compress(diskFile, destFile, imageMagickBaseHome);
-                convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                convertStateProtocol.setMessage("文件" + diskFile + "转码成功！");
+                convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
+                convertStateProtocol.setMessage(destFile.getAbsolutePath());
                 session.write(convertStateProtocol);
 
                 // 其他类型文件
