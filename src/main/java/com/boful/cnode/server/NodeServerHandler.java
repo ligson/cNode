@@ -21,6 +21,7 @@ import com.boful.cnode.protocol.Operation;
 import com.boful.common.file.utils.FileType;
 import com.boful.convert.core.ConvertProviderConfig;
 import com.boful.convert.core.impl.BofulConvertProvider;
+import com.boful.convert.core.impl.utils.FFMpegUtils;
 import com.boful.convert.core.impl.utils.ImageMagickUtils;
 import com.boful.convert.model.DiskFile;
 
@@ -217,8 +218,16 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 BofulConvertProvider bofulConvertProvider = new BofulConvertProvider(config);
                 AudioTranscodeEvent event = new AudioTranscodeEvent(session);
                 bofulConvertProvider.transcodeVideo(new DiskFile(diskFile), new DiskFile(destFile), width, height,
-                        videoBitrate, audioBitrate, event, null);
-
+                        videoBitrate, audioBitrate, event, "job1");
+                
+                // TODO 测试 start
+             /*   
+                FFMpegUtils.transcode("E:/transcode/ffmpeg/bin/ffmpeg.exe", "E:/transcode/MediaInfo/MediaInfo",
+                        diskFile.getAbsolutePath(), destFile.getAbsolutePath(), width + "x"
+                                + height, event,"job1");
+                System.out.println("over!");*/
+                // TODO 测试 end
+                
                 // 音频转码
             } else if (FileType.isAudio(diskFile.getName())) {
                 if (audioBitrate == 0) {
