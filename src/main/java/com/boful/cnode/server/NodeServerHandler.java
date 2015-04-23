@@ -279,14 +279,12 @@ public class NodeServerHandler extends IoHandlerAdapter {
                         } else {
                             // 转码开始
                             File pdfFile = new File(destFile.getParent(), jobId + ".pdf");
-                            System.out.println(pdfFile.getAbsolutePath());
-                            AudioTranscodeEvent pdfEvent = new AudioTranscodeEvent(session);
                             ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
-                                    new DiskFile(pdfFile), pdfEvent, jobId);
+                                    new DiskFile(pdfFile), null, jobId);
 
-                            AudioTranscodeEvent swfEvent = new AudioTranscodeEvent(session);
+                            AudioTranscodeEvent event = new AudioTranscodeEvent(session);
                             ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
-                                    new DiskFile(destFile), swfEvent, jobId);
+                                    new DiskFile(destFile), event, jobId);
                         }
                     }
 
