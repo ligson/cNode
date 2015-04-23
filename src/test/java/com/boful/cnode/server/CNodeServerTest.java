@@ -50,7 +50,7 @@ public class CNodeServerTest {
         CNodeServerTest test4 = new CNodeServerTest();
         try {
             test4.connect("127.0.0.1", 9000);
-            test4.send("e:/ttt.doc", "e:/test/ttt.pdf");
+            test4.send("e:/aaa.txt", "e:/test/aaa2.pdf");
         } catch (Exception e) {
             e.printStackTrace();
         }
