@@ -12,10 +12,12 @@ public class ConvertStateProtocol {
     public static int STATE_FAIL = 0;
     /** 转码等待 */
     public static int STATE_WAITING = 1;
+    /** 转码开始 */
+    public static int STATE_START = 2;
     /** 转码中 */
-    public static int STATE_CONVERTING = 2;
+    public static int STATE_CONVERTING = 3;
     /** 转码成功 */
-    public static int STATE_SUCCESS = 3;
+    public static int STATE_SUCCESS = 4;
 
     private int state;
     private String message;

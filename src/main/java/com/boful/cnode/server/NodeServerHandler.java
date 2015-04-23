@@ -208,6 +208,9 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 }
             }
 
+            String diskSufix = FileUtils.getFileSufix(diskFile.getName());
+            diskSufix = diskSufix.toUpperCase();
+            session.setAttribute("destFile", destFile.getAbsolutePath());
             // 视频转码
             if (FileType.isVideo(diskFile.getName())) {
                 if (videoBitrate == 0 || audioBitrate == 0 || width == 0 || height == 0) {
@@ -249,13 +252,59 @@ public class NodeServerHandler extends IoHandlerAdapter {
                         new DiskFile(destFile), audioBitrate, event, jobId);
 
                 // 文档转码
-            } else if (FileType.isDocument(diskFile.getName())) {
-                String sufix = FileUtils.getFileSufix(destFile.getName());
-                if (!sufix.toUpperCase().equals("PDF")) {
-                    convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("参数o不是PDF文件！");
+            } else if (FileType.isDocument(diskFile.getName()) || diskSufix.equals("PDF") || diskSufix.equals("SWF")) {
+                String destSufix = FileUtils.getFileSufix(destFile.getName());
+                destSufix = destSufix.toUpperCase();
+                // 都是PDF文件，不需要转码
+                if (diskSufix.equals("PDF") && destSufix.equals("PDF")) {
+                    convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
+                    convertStateProtocol.setMessage(diskFile.getAbsolutePath());
                     session.write(convertStateProtocol);
-                    return;
+
+                    // 都是SWF文件，不需要转码
+                } else if (diskSufix.equals("SWF") && destSufix.equals("SWF")) {
+                    convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
+                    convertStateProtocol.setMessage(diskFile.getAbsolutePath());
+                    session.write(convertStateProtocol);
+
+                } else {
+                    // 转码为SWF文件，被转码文件只能是PDF文件
+                    if (destSufix.equals("SWF")) {
+                        if (diskSufix.equals("PDF")) {
+                            // 转码开始
+                            AudioTranscodeEvent event = new AudioTranscodeEvent(session);
+                            ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
+                                    new DiskFile(destFile), event, jobId);
+
+                        } else {
+                            // 转码开始
+                            File pdfFile = new File(destFile.getParent(), jobId + ".pdf");
+                            System.out.println(pdfFile.getAbsolutePath());
+                            AudioTranscodeEvent pdfEvent = new AudioTranscodeEvent(session);
+                            ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
+                                    new DiskFile(pdfFile), pdfEvent, jobId);
+
+                            AudioTranscodeEvent swfEvent = new AudioTranscodeEvent(session);
+                            ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
+                                    new DiskFile(destFile), swfEvent, jobId);
+                        }
+                    }
+
+                    // 转码为PDF文件，被转码文件只能是SWF和PDF以外的文件
+                    if (destSufix.equals("PDF")) {
+                        if (diskSufix.equals("SWF")) {
+                            convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
+                            convertStateProtocol.setMessage("不能将SWF文件转换为PDF文件！");
+                            session.write(convertStateProtocol);
+                            return;
+
+                        } else {
+                            // 转码开始
+                            AudioTranscodeEvent event = new AudioTranscodeEvent(session);
+                            ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
+                                    new DiskFile(destFile), event, jobId);
+                        }
+                    }
                 }
 
                 // 转码开始
