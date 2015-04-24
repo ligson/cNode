@@ -56,6 +56,7 @@ public class CNodeServerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private ConnectFuture cf;
