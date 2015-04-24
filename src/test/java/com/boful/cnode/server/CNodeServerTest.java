@@ -64,7 +64,7 @@ public class CNodeServerTest {
      * 解码器定义
      */
     private static BofulCodec bofulCodec = new BofulCodec();
-    private static ClientHandler clientHandler = new ClientHandler();
+    private static NodeClientHandler clientHandler = new NodeClientHandler();
 
     public void connect(String address, int port) {
         logger.debug("连接到：" + address + ":" + port);
