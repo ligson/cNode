@@ -11,10 +11,10 @@ import org.apache.mina.core.session.IoSession;
 import com.boful.cnode.protocol.ConvertStateProtocol;
 import com.boful.cnode.protocol.Operation;
 
-public class ClientHandler extends IoHandlerAdapter {
+public class NodeClientHandler extends IoHandlerAdapter {
 
     private Set<IoSession> sessions = new HashSet<IoSession>();
-    private static Logger logger = Logger.getLogger(ClientHandler.class);
+    private static Logger logger = Logger.getLogger(NodeClientHandler.class);
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
