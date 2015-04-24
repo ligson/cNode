@@ -26,7 +26,7 @@ public class AudioTranscodeEvent implements TranscodeEvent {
     public void onSubmitSuccess(DiskFile diskFile, String jobId) {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_WAITING);
-        convertStateProtocol.setMessage("转码等待！");
+        convertStateProtocol.setMessage("文件" + diskFile.getAbsolutePath() + "转码等待！");
         session.write(convertStateProtocol);
     }
 
@@ -34,7 +34,7 @@ public class AudioTranscodeEvent implements TranscodeEvent {
     public void onStartTranscode(DiskFile diskFile, String jobId) {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_START);
-        convertStateProtocol.setMessage("转码开始！");
+        convertStateProtocol.setMessage("文件" + diskFile.getAbsolutePath() + "转码开始！");
         session.write(convertStateProtocol);
     }
 
@@ -54,7 +54,7 @@ public class AudioTranscodeEvent implements TranscodeEvent {
             convertStateProtocol.setMessage(session.getAttribute("destFile").toString());
         } else {
             convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
-            convertStateProtocol.setMessage("转码进度" + process + "%");
+            convertStateProtocol.setMessage("文件" + diskFile.getAbsolutePath() + "转码进度:" + process + "%");
         }
         session.write(convertStateProtocol);
     }
