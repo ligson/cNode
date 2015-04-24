@@ -30,14 +30,12 @@ public class NodeServerHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
-        super.sessionCreated(session);
         sessions.add(session);
         System.out.println("connect ......");
     }
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
-        super.sessionClosed(session);
         sessions.remove(session);
         System.out.println("disconnect ......");
     }
