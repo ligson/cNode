@@ -39,7 +39,7 @@ public class NodeClientHandler extends IoHandlerAdapter {
             int operation = field.getInt(message);
             if (operation == Operation.TAG_CONVERT_STATE) {
                 ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
-                System.out.println(convertStateProtocol.getMessage());
+                logger.info(convertStateProtocol.getMessage());
             }
         }
     }

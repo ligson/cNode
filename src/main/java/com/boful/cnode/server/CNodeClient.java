@@ -15,7 +15,7 @@ import com.boful.cnode.server.codec.BofulCodec;
 public class CNodeClient {
     private ConnectFuture cf;
     private NioSocketConnector connector = new NioSocketConnector();
-    private Logger logger = Logger.getLogger(CNodeServerTest.class);
+    private Logger logger = Logger.getLogger(CNodeClient.class);
     private IoSession ioSession;
 
     /***
@@ -24,7 +24,7 @@ public class CNodeClient {
     private static BofulCodec bofulCodec = new BofulCodec();
     private static NodeClientHandler clientHandler = new NodeClientHandler();
 
-    public void connect(String address, int port) {
+    public void connect(String address, int port) throws Exception {
         logger.debug("连接到：" + address + ":" + port);
 
         // 创建接受数据的过滤器
@@ -41,6 +41,13 @@ public class CNodeClient {
         // 连接到服务器：
         cf = connector.connect(new InetSocketAddress(address, port));
         cf.awaitUninterruptibly();
+        try {
+            ioSession = cf.getSession();
+        } catch (Exception e) {
+            logger.debug("服务器" + address + ":" + port + "未连接上！");
+            throw e;
+        }
+
     }
 
     public void send(String cmd) throws Exception {
@@ -52,7 +59,6 @@ public class CNodeClient {
         } else {
             throw new Exception("未连接上");
         }
-
     }
 
     public void disconnect() {
