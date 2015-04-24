@@ -20,7 +20,8 @@ public class CNodeServerTest {
         CNodeServerTest test1 = new CNodeServerTest();
         try {
             test1.connect("127.0.0.1", 9000);
-            test1.send("e:/爱情公寓番外篇温酒煮华雄.f4v", "e:/test/bak.mp4");
+            String cmd = "-id job_0001 -i e:/爱情公寓番外篇温酒煮华雄.f4v -o e:/test/bak.mp4 -vb 30000 -ab 20000 -size 300x200";
+            test1.send(cmd);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -29,7 +30,8 @@ public class CNodeServerTest {
         CNodeServerTest test2 = new CNodeServerTest();
         try {
             test2.connect("127.0.0.1", 9000);
-            test2.send("e:/Koala.jpg", "e:/test/Koala1.jpg");
+            String cmd = "-id job_0001 -i e:/Koala.jpg -o e:/test/Koala1.jpg";
+            test2.send(cmd);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,7 +40,8 @@ public class CNodeServerTest {
         CNodeServerTest test3 = new CNodeServerTest();
         try {
             test3.connect("127.0.0.1", 9000);
-            test3.send("e:/mmd.mp3", "e:/test/mmd2.wav");
+            String cmd = "-id job_0001 -i e:/mmd.mp3 -o e:/test/mmd2.wav -ab 20000";
+            test3.send(cmd);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,7 +50,8 @@ public class CNodeServerTest {
         CNodeServerTest test4 = new CNodeServerTest();
         try {
             test4.connect("127.0.0.1", 9000);
-            test4.send("e:/aaa.txt", "e:/test/aaa2.swf");
+            String cmd = "-id job_0001 -i e:/aaa.txt -o e:/test/aaa2.swf";
+            test4.send(cmd);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,18 +89,10 @@ public class CNodeServerTest {
         cf.awaitUninterruptibly();
     }
 
-    public void send(String diskFile, String destFile) throws Exception {
+    public void send(String cmd) throws Exception {
         ioSession = cf.getSession();
         if (ioSession != null) {
             ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
-
-            // 命令行
-            String cmd = "-id job_0001";
-            cmd += " -i " + diskFile;
-            cmd += " -o " + destFile;
-            cmd += " -vb 30000";
-            cmd += " -ab 20000";
-            cmd += " -size 300x200";
             convertTaskProtocol.setCmd(cmd);
             ioSession.write(convertTaskProtocol);
 
