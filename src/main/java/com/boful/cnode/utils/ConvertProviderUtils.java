@@ -17,17 +17,16 @@ public class ConvertProviderUtils {
 
     public static void initConvertProviderConfig() throws IOException, DocumentException {
         config = new ConvertProviderConfig();
-        config.init(new File("e:/convert.xml"));
+        config.init(new File("convert.xml"));
         logger.debug("配置文件初始化成功...........");
     }
 
     public static ConvertProviderConfig getConfig() {
         return config;
     }
-    
-    
+
     public static BofulConvertProvider getBofulConvertProvider() {
-        if(bofulConvertProvider == null) {
+        if (bofulConvertProvider == null) {
             bofulConvertProvider = new BofulConvertProvider(config);
         }
         return bofulConvertProvider;

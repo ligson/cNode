@@ -1,0 +1,28 @@
+<convertConfig>
+  <providers>
+    <provider>
+      <name>BofulProvider1</name>
+      <description>hello</description>
+      <hosts>
+        <host name="bf1">
+          <ip>127.0.0.1</ip>
+          <port>1666</port>
+          <params>
+            <param name="transcodeVideoEnable">true</param>
+            <param name="transcodeAudioEnable">true</param>
+            <param name="transcodeDocumentEnable">true</param>
+            <param name="ffmpegPath">E:\transcode\ffmpeg\bin\ffmpeg.exe</param>
+            <param name="mp4BoxPath">E:\transcode\GPAC\mp4box.exe</param>
+            <param name="mencoderPath">E:\transcode\mplayer\mencoder.exe</param>
+            <!--默认位置不需要配置-->
+            <param name="sofficePath">E:/transcode/LibreOffice/program/soffice.exe</param>
+            <param name="pdf2swfPath">E:/transcode/swftools/pdf2swf.exe</param>
+            <param name="mediaInfoPath">E:/transcode/MediaInfo/MediaInfo</param>
+            <!--如果命令行能找到convert就不需要配置-->
+            <param name="imageMagickSearchPath">E:/transcode/ImageMagick</param>
+          </params>
+        </host>
+      </hosts>
+    </provider>
+  </providers>
+</convertConfig>
