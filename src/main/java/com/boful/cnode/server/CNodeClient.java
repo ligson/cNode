@@ -43,6 +43,7 @@ public class CNodeClient {
         cf.awaitUninterruptibly();
         try {
             ioSession = cf.getSession();
+            logger.debug("服务器" + address + ":" + port + "连接成功！");
         } catch (Exception e) {
             logger.debug("服务器" + address + ":" + port + "未连接上！");
             throw e;
