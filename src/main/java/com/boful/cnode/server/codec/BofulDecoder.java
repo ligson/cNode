@@ -5,9 +5,9 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 
-import com.boful.cnode.protocol.ConvertStateProtocol;
-import com.boful.cnode.protocol.ConvertTaskProtocol;
-import com.boful.cnode.protocol.Operation;
+import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.net.cnode.protocol.ConvertTaskProtocol;
+import com.boful.net.cnode.protocol.Operation;
 
 public class BofulDecoder extends CumulativeProtocolDecoder {
 
