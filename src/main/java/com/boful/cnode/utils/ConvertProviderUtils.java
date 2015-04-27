@@ -4,21 +4,34 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 import com.boful.convert.core.ConvertProviderConfig;
 import com.boful.convert.core.impl.BofulConvertProvider;
+import com.boful.net.fserver.ClientMain;
 
 public class ConvertProviderUtils {
 
     private static ConvertProviderConfig config = null;
     private static BofulConvertProvider bofulConvertProvider = null;
     private static Logger logger = Logger.getLogger(ConvertProviderUtils.class);
+    private static ClientMain client = null;
 
-    public static void initConvertProviderConfig() throws IOException, DocumentException {
-        config = new ConvertProviderConfig();
-        config.init(new File("src/main/resources/convert.xml"));
-        logger.debug("配置文件初始化成功...........");
+    public static boolean initConvertProviderConfig() {
+        try {
+            config = new ConvertProviderConfig();
+            config.init(new File("src/main/resources/convert.xml"));
+            logger.debug("配置文件初始化成功...........");
+            return true;
+        } catch (Exception e) {
+            logger.debug("配置文件初始化失败...........");
+            logger.debug("错误信息：" + e.getMessage());
+            return false;
+        }
+
     }
 
     public static ConvertProviderConfig getConfig() {
@@ -30,5 +43,32 @@ public class ConvertProviderUtils {
             bofulConvertProvider = new BofulConvertProvider(config);
         }
         return bofulConvertProvider;
+    }
+
+    public static boolean initClient() {
+        try {
+            SAXReader SR = new SAXReader();
+            Document doc = SR.read(new File("src/main/resources/client.xml"));
+            Element rootElement = doc.getRootElement();
+
+            Element clientRootElement = rootElement.element("client");
+            Element serverIpElement = clientRootElement.element("ip");
+            Element serverPortElement = clientRootElement.element("port");
+            String ip = serverIpElement.getText();
+            int port = Integer.parseInt(serverPortElement.getText());
+            client = new ClientMain();
+            client.connect(ip, port);
+
+            logger.debug("客户端初始化成功...........");
+            return true;
+        } catch (Exception e) {
+            logger.debug("客户端初始化失败...........");
+            logger.debug("错误信息：" + e.getMessage());
+            return false;
+        }
+    }
+
+    public static ClientMain getClient() {
+        return client;
     }
 }

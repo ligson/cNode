@@ -1,5 +1,6 @@
 package com.boful.cnode.server;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import org.apache.log4j.Logger;
@@ -25,16 +26,35 @@ public class CNodeServer {
     private static Logger logger = Logger.getLogger(CNodeServer.class);
 
     public static void main(String[] args) throws Exception {
+        startServer(2014, 9000, 10);
+    }
+
+    public static void startServer(int bufferSize, int port, int idleTime) {
         acceptor.getFilterChain().addLast("logger", new LoggingFilter());
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(bofulCodec));
         acceptor.setHandler(serverHandler);
 
-        acceptor.getSessionConfig().setReadBufferSize(2048);
-        acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
-        acceptor.bind(new InetSocketAddress(9000));
+        acceptor.getSessionConfig().setReadBufferSize(bufferSize);
+        acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, idleTime);
+        try {
+            acceptor.bind(new InetSocketAddress(port));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         logger.debug("starting...........");
 
         // 初始化ConvertProviderConfig
-        ConvertProviderUtils.initConvertProviderConfig();
+        boolean initState = ConvertProviderUtils.initConvertProviderConfig();
+        if (!initState) {
+            logger.debug("程序退出...........");
+            System.exit(0);
+        }
+
+        // 初始化客户端
+        initState = ConvertProviderUtils.initClient();
+        if (!initState) {
+            logger.debug("程序退出...........");
+            System.exit(0);
+        }
     }
 }
