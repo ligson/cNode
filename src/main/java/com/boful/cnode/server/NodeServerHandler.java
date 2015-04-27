@@ -15,9 +15,9 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cnode.event.AudioTranscodeEvent;
-import com.boful.cnode.protocol.ConvertStateProtocol;
-import com.boful.cnode.protocol.ConvertTaskProtocol;
-import com.boful.cnode.protocol.Operation;
+import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.net.cnode.protocol.ConvertTaskProtocol;
+import com.boful.net.cnode.protocol.Operation;
 import com.boful.cnode.utils.ConvertProviderUtils;
 import com.boful.common.file.utils.FileType;
 import com.boful.common.file.utils.FileUtils;
