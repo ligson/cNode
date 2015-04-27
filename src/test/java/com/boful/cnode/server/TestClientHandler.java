@@ -8,8 +8,8 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.cnode.protocol.ConvertStateProtocol;
-import com.boful.cnode.protocol.Operation;
+import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.net.cnode.protocol.Operation;
 
 public class TestClientHandler extends IoHandlerAdapter {
 

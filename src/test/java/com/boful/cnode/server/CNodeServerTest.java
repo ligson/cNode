@@ -10,8 +10,8 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
-import com.boful.cnode.protocol.ConvertTaskProtocol;
 import com.boful.cnode.server.codec.BofulCodec;
+import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 
 public class CNodeServerTest {
 
