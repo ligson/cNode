@@ -26,20 +26,23 @@ public class CNodeServer {
     private static Logger logger = Logger.getLogger(CNodeServer.class);
 
     public static void main(String[] args) throws Exception {
-        startServer(2014, 9000, 10);
+        startServer();
     }
 
-    public static void startServer(int bufferSize, int port, int idleTime) {
+    public static void startServer() {
+        int[] config = ConvertProviderUtils.initServerConfig();
         acceptor.getFilterChain().addLast("logger", new LoggingFilter());
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(bofulCodec));
         acceptor.setHandler(serverHandler);
 
-        acceptor.getSessionConfig().setReadBufferSize(bufferSize);
-        acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, idleTime);
+        acceptor.getSessionConfig().setReadBufferSize(config[0]);
+        acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, config[1]);
         try {
-            acceptor.bind(new InetSocketAddress(port));
+            acceptor.bind(new InetSocketAddress(config[2]));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug("服务器启动失败...........");
+            logger.debug("错误信息：" + e.getMessage());
+            System.exit(0);
         }
         logger.debug("starting...........");
 
