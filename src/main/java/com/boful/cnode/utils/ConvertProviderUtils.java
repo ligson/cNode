@@ -17,7 +17,7 @@ public class ConvertProviderUtils {
 
     public static void initConvertProviderConfig() throws IOException, DocumentException {
         config = new ConvertProviderConfig();
-        config.init(new File("convert.xml"));
+        config.init(new File("src/main/resources/convert.xml"));
         logger.debug("配置文件初始化成功...........");
     }
 
