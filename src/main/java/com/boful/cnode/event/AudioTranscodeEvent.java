@@ -1,8 +1,5 @@
 package com.boful.cnode.event;
 
-import java.io.File;
-
-import org.apache.cassandra.cli.CliParser.newColumnFamily_return;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cnode.utils.ConvertProviderUtils;
@@ -53,7 +50,7 @@ public class AudioTranscodeEvent implements TranscodeEvent {
         // 调用fserver
         ClientMain client = ConvertProviderUtils.getClient();
         try {
-            client.send(destFile.getAbsoluteFile(), "e:/test/upload/"+destFile.getFileName());
+            client.send(destFile.getAbsoluteFile(), "e:/test/upload/"+destFile.getName());
         } catch (Exception e) {
             e.printStackTrace();
         }
