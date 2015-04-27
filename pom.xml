@@ -144,6 +144,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.boful</groupId>
+			<artifactId>bofulnetprotocol</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.boful</groupId>
 			<artifactId>fserver</artifactId>
 			<version>1.0</version>
 		</dependency>
