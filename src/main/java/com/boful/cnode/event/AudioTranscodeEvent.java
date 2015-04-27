@@ -2,7 +2,7 @@ package com.boful.cnode.event;
 
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.cnode.protocol.ConvertStateProtocol;
+import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.convert.core.TranscodeEvent;
 import com.boful.convert.model.DiskFile;
 
