@@ -81,14 +81,12 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>${commonsLang.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -107,14 +105,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.boful</groupId>
 			<artifactId>boful-common</artifactId>
 			<version>${bofulCommon.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -154,13 +150,11 @@
 			<groupId>com.boful</groupId>
 			<artifactId>boful-common</artifactId>
 			<version>1.0</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.boful</groupId>
 			<artifactId>boful-convert-api</artifactId>
 			<version>0.0.1</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.boful</groupId>

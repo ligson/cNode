@@ -1,11 +1,10 @@
 package com.boful.cnode.utils;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
@@ -23,7 +22,8 @@ public class ConvertProviderUtils {
     public static boolean initConvertProviderConfig() {
         try {
             config = new ConvertProviderConfig();
-            config.init(new File("src/main/resources/convert.xml"));
+            URL url = ClassLoader.getSystemResource("conf/convert.xml");
+            config.init(new File(url.getPath()));
             logger.debug("配置文件初始化成功...........");
             return true;
         } catch (Exception e) {
@@ -48,7 +48,8 @@ public class ConvertProviderUtils {
     public static boolean initClient() {
         try {
             SAXReader SR = new SAXReader();
-            Document doc = SR.read(new File("src/main/resources/client.xml"));
+            URL url = ClassLoader.getSystemResource("conf/client.xml");
+            Document doc = SR.read(url.getPath());
             Element rootElement = doc.getRootElement();
 
             Element clientRootElement = rootElement.element("client");
