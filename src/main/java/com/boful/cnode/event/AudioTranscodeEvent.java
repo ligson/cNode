@@ -1,10 +1,15 @@
 package com.boful.cnode.event;
 
+import java.io.File;
+
+import org.apache.cassandra.cli.CliParser.newColumnFamily_return;
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.cnode.utils.ConvertProviderUtils;
 import com.boful.convert.core.TranscodeEvent;
 import com.boful.convert.model.DiskFile;
+import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.net.fserver.ClientMain;
 
 public class AudioTranscodeEvent implements TranscodeEvent {
 
@@ -42,8 +47,16 @@ public class AudioTranscodeEvent implements TranscodeEvent {
     public void onTranscodeSuccess(DiskFile diskFile, DiskFile destFile, String jobId) {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
-        convertStateProtocol.setMessage(session.getAttribute("destFile").toString());
+        convertStateProtocol.setMessage(destFile.getAbsolutePath());
         session.write(convertStateProtocol);
+        
+        // 调用fserver
+        ClientMain client = ConvertProviderUtils.getClient();
+        try {
+            client.send(destFile.getAbsoluteFile(), "e:/test/upload/"+destFile.getFileName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
