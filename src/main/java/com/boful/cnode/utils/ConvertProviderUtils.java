@@ -56,6 +56,9 @@ public class ConvertProviderUtils {
         try {
             config = new ConvertProviderConfig();
             URL url = ClassLoader.getSystemResource("conf/convert.xml");
+            if (url == null) {
+                url = ClassLoader.getSystemResource("convert.xml");
+            }
             config.init(new File(url.getPath()));
             logger.debug("配置文件初始化成功...........");
             return true;
