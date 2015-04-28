@@ -27,6 +27,9 @@ public class ConvertProviderUtils {
         int[] config = new int[3];
         try {
             URL url = ClassLoader.getSystemResource("conf/config.properties");
+            if (url == null) {
+                url = ClassLoader.getSystemResource("config.properties");
+            }
             InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
             Properties props = new Properties();
             props.load(in);
@@ -79,6 +82,9 @@ public class ConvertProviderUtils {
         try {
             SAXReader SR = new SAXReader();
             URL url = ClassLoader.getSystemResource("conf/client.xml");
+            if (url == null) {
+                url = ClassLoader.getSystemResource("client.xml");
+            }
             Document doc = SR.read(url.getPath());
             Element rootElement = doc.getRootElement();
 
