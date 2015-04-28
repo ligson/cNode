@@ -2,11 +2,9 @@ package com.boful.cnode.event;
 
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.cnode.utils.ConvertProviderUtils;
 import com.boful.convert.core.TranscodeEvent;
 import com.boful.convert.model.DiskFile;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
-import com.boful.net.fserver.ClientMain;
 
 public class AudioTranscodeEvent implements TranscodeEvent {
 
@@ -46,14 +44,6 @@ public class AudioTranscodeEvent implements TranscodeEvent {
         convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
         convertStateProtocol.setMessage(destFile.getAbsolutePath());
         session.write(convertStateProtocol);
-        
-        // 调用fserver
-        ClientMain client = ConvertProviderUtils.getClient();
-        try {
-            client.send(destFile.getAbsoluteFile(), "e:/test/upload/"+destFile.getName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

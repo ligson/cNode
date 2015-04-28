@@ -52,12 +52,5 @@ public class CNodeServer {
             logger.debug("程序退出...........");
             System.exit(0);
         }
-
-        // 初始化客户端
-        initState = ConvertProviderUtils.initClient();
-        if (!initState) {
-            logger.debug("程序退出...........");
-            System.exit(0);
-        }
     }
 }
