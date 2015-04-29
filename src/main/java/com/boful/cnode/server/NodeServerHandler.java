@@ -5,24 +5,21 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cnode.event.AudioTranscodeEvent;
-import com.boful.net.cnode.protocol.ConvertStateProtocol;
-import com.boful.net.cnode.protocol.ConvertTaskProtocol;
-import com.boful.net.cnode.protocol.Operation;
 import com.boful.cnode.utils.ConvertProviderUtils;
 import com.boful.common.file.utils.FileType;
 import com.boful.common.file.utils.FileUtils;
 import com.boful.convert.core.impl.utils.ImageMagickUtils;
 import com.boful.convert.model.DiskFile;
+import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.net.cnode.protocol.ConvertTaskProtocol;
+import com.boful.net.cnode.protocol.Operation;
+import com.boful.net.utils.CommandLineUtils;
 
 public class NodeServerHandler extends IoHandlerAdapter {
     private Set<IoSession> sessions = new HashSet<IoSession>();
@@ -63,21 +60,17 @@ public class NodeServerHandler extends IoHandlerAdapter {
     }
 
     private void doConvert(ConvertTaskProtocol convertTaskProtocol, IoSession session) {
-        // 获取命令行
-        String[] cmdArgs = StringUtils.split(convertTaskProtocol.getCmd(), " ");
-
-        CommandLineParser parser = new BasicParser();
-        Options options = new Options();
-        options.addOption("i", "diskFile", true, "");
-        options.addOption("o", "destFile", true, "");
-        options.addOption("vb", "videoBitrate", true, "");
-        options.addOption("ab", "audioBitrate", true, "");
-        options.addOption("size", "size", true, "");
-        options.addOption("id", "jobId", true, "");
 
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         try {
-            CommandLine commandLine = parser.parse(options, cmdArgs);
+            // 命令行解析
+            CommandLine commandLine = CommandLineUtils.parse(convertTaskProtocol.getCmd());
+            if (commandLine == null) {
+                convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
+                convertStateProtocol.setMessage("命令行" + convertTaskProtocol.getCmd() + "错误！");
+                session.write(convertStateProtocol);
+                return;
+            }
 
             // jobId
             String jobId = null;
@@ -85,7 +78,7 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 jobId = commandLine.getOptionValue("id");
             } else {
                 convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                convertStateProtocol.setMessage("没有设置id参数！");
+                convertStateProtocol.setMessage("没有设置jobId！");
                 session.write(convertStateProtocol);
                 return;
             }
@@ -93,17 +86,16 @@ public class NodeServerHandler extends IoHandlerAdapter {
             // 元文件
             File diskFile = null;
             if (commandLine.hasOption("i")) {
-                String arg = commandLine.getOptionValue("i");
-                diskFile = new File(arg);
+                diskFile = new File(commandLine.getOptionValue("i"));
                 if (!diskFile.exists()) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("文件" + arg + "不存在！");
+                    convertStateProtocol.setMessage("文件" + diskFile.getAbsolutePath() + "不存在！");
                     session.write(convertStateProtocol);
                     return;
                 }
             } else {
                 convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                convertStateProtocol.setMessage("没有设置i参数！");
+                convertStateProtocol.setMessage("没有设置diskFile！");
                 session.write(convertStateProtocol);
                 return;
             }
@@ -111,19 +103,18 @@ public class NodeServerHandler extends IoHandlerAdapter {
             // 转码文件
             File destFile = null;
             if (commandLine.hasOption("o")) {
-                String arg = commandLine.getOptionValue("o");
-                destFile = new File(arg);
-                File path = new File(destFile.getParent());
-                if (!path.exists()) {
+                destFile = new File(commandLine.getOptionValue("o"));
+                File parent = new File(destFile.getParent());
+                // 创建文件夹失败
+                if (!parent.mkdirs()) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("文件" + arg + "的路径错误！");
-                    session.write(convertStateProtocol);
+                    convertStateProtocol.setMessage("文件" + destFile.getAbsolutePath() + "的路径错误！");
                     session.write(convertStateProtocol);
                     return;
                 }
             } else {
                 convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                convertStateProtocol.setMessage("没有设置o参数！");
+                convertStateProtocol.setMessage("没有设置destFile！");
                 session.write(convertStateProtocol);
                 return;
             }
@@ -138,13 +129,13 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     }
                     if (videoBitrate < 0) {
                         convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                        convertStateProtocol.setMessage("参数vb的值必须是正数！");
+                        convertStateProtocol.setMessage("参数videoBitrate的值必须是正数！");
                         session.write(convertStateProtocol);
                         return;
                     }
                 } catch (NumberFormatException e) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("参数vb的值必须是整数！");
+                    convertStateProtocol.setMessage("参数videoBitrate的值必须是整数！");
                     session.write(convertStateProtocol);
                     return;
                 }
@@ -160,13 +151,13 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     }
                     if (audioBitrate < 0) {
                         convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                        convertStateProtocol.setMessage("参数ab的值必须是正数！");
+                        convertStateProtocol.setMessage("参数audioBitrate的值必须是正数！");
                         session.write(convertStateProtocol);
                         return;
                     }
                 } catch (NumberFormatException e) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("参数ab的值必须是整数！");
+                    convertStateProtocol.setMessage("参数audioBitrate的值必须是整数！");
                     session.write(convertStateProtocol);
                     return;
                 }
@@ -181,7 +172,7 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     String[] array = arg.split("x");
                     if (array.length != 2) {
                         convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                        convertStateProtocol.setMessage("参数size的格式错误！");
+                        convertStateProtocol.setMessage("参数size的值错误！");
                         session.write(convertStateProtocol);
                         return;
                     }
@@ -213,13 +204,13 @@ public class NodeServerHandler extends IoHandlerAdapter {
             if (FileType.isVideo(diskFile.getName())) {
                 if (videoBitrate == 0 || audioBitrate == 0 || width == 0 || height == 0) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("视频文件转码必须设置参数:vb、ab和size！");
+                    convertStateProtocol.setMessage("视频文件转码必须设置参数:videoBitrate、audioBitrate和size！");
                     session.write(convertStateProtocol);
                     return;
                 }
                 if (!FileType.isVideo(destFile.getName())) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("参数o不是视频文件！");
+                    convertStateProtocol.setMessage("参数destFile不是视频文件！");
                     session.write(convertStateProtocol);
                     return;
                 }
@@ -233,13 +224,13 @@ public class NodeServerHandler extends IoHandlerAdapter {
             } else if (FileType.isAudio(diskFile.getName())) {
                 if (audioBitrate == 0) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("音频文件转码必须设置参数:vb、ab和size！");
+                    convertStateProtocol.setMessage("音频文件转码必须设置参数:audioBitrate！");
                     session.write(convertStateProtocol);
                     return;
                 }
                 if (!FileType.isAudio(destFile.getName())) {
                     convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                    convertStateProtocol.setMessage("参数o不是音频文件！");
+                    convertStateProtocol.setMessage("参数destFile不是音频文件！");
                     session.write(convertStateProtocol);
                     return;
                 }
