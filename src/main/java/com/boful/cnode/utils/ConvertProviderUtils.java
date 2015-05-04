@@ -26,6 +26,7 @@ public class ConvertProviderUtils {
                 url = ClassLoader.getSystemResource("config.properties");
             }
             InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
+            //InputStream in = new BufferedInputStream(new FileInputStream(new File("src/main/resources/config.properties")));
             Properties props = new Properties();
             props.load(in);
 
@@ -55,6 +56,7 @@ public class ConvertProviderUtils {
                 url = ClassLoader.getSystemResource("convert.xml");
             }
             config.init(new File(url.getPath()));
+            //config.init(new File("src/main/resources/convert.xml"));
             logger.debug("配置文件初始化成功...........");
             return true;
         } catch (Exception e) {
