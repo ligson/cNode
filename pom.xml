@@ -132,7 +132,6 @@
 					<artifactId>log4j</artifactId>
 				</exclusion>
 			</exclusions>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
