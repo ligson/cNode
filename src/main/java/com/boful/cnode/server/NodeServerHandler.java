@@ -10,10 +10,10 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.cnode.event.AudioTranscodeEvent;
 import com.boful.cnode.utils.ConvertProviderUtils;
 import com.boful.common.file.utils.FileType;
 import com.boful.common.file.utils.FileUtils;
+import com.boful.convert.core.TranscodeEvent;
 import com.boful.convert.core.impl.utils.ImageMagickUtils;
 import com.boful.convert.model.DiskFile;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
@@ -106,10 +106,10 @@ public class NodeServerHandler extends IoHandlerAdapter {
             String diskSufix = FileUtils.getFileSufix(diskFile.getName());
             diskSufix = diskSufix.toUpperCase();
             session.setAttribute("destFile", destFile.getAbsolutePath());
+            TranscodeEvent event = (TranscodeEvent) session.getAttribute("transcodeEvent");
             // 视频转码
             if (FileType.isVideo(diskFile.getName())) {
                 // 转码开始
-                AudioTranscodeEvent event = new AudioTranscodeEvent(session);
                 ConvertProviderUtils.getBofulConvertProvider().transcodeVideo(new DiskFile(diskFile),
                         new DiskFile(destFile), width, height, videoBitrate, audioBitrate, event, jobId);
 
@@ -117,7 +117,6 @@ public class NodeServerHandler extends IoHandlerAdapter {
             } else if (FileType.isAudio(diskFile.getName())) {
 
                 // 转码开始
-                AudioTranscodeEvent event = new AudioTranscodeEvent(session);
                 ConvertProviderUtils.getBofulConvertProvider().transcodeAudio(new DiskFile(diskFile),
                         new DiskFile(destFile), audioBitrate, event, jobId);
 
@@ -142,7 +141,6 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     if (destSufix.equals("SWF")) {
                         if (diskSufix.equals("PDF")) {
                             // 转码开始
-                            AudioTranscodeEvent event = new AudioTranscodeEvent(session);
                             ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
                                     new DiskFile(destFile), event, jobId);
 
@@ -152,7 +150,6 @@ public class NodeServerHandler extends IoHandlerAdapter {
                             ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
                                     new DiskFile(pdfFile), null, jobId);
 
-                            AudioTranscodeEvent event = new AudioTranscodeEvent(session);
                             ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
                                     new DiskFile(destFile), event, jobId);
                         }
@@ -161,14 +158,12 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     // 转码为PDF文件，被转码文件只能是SWF和PDF以外的文件
                     if (destSufix.equals("PDF")) {
                         // 转码开始
-                        AudioTranscodeEvent event = new AudioTranscodeEvent(session);
                         ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
                                 new DiskFile(destFile), event, jobId);
                     }
                 }
 
                 // 转码开始
-                AudioTranscodeEvent event = new AudioTranscodeEvent(session);
                 ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
                         new DiskFile(destFile), event, jobId);
 
