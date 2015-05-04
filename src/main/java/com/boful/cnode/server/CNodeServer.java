@@ -44,7 +44,6 @@ public class CNodeServer {
             logger.debug("错误信息：" + e.getMessage());
             System.exit(0);
         }
-        logger.debug("starting...........");
 
         // 初始化ConvertProviderConfig
         boolean initState = ConvertProviderUtils.initConvertProviderConfig();
@@ -52,5 +51,7 @@ public class CNodeServer {
             logger.debug("程序退出...........");
             System.exit(0);
         }
+        logger.debug("starting...........");
+        System.out.println("starting...........");
     }
 }

@@ -84,6 +84,9 @@ public class NodeServerHandler extends IoHandlerAdapter {
             File diskFile = new File(commandMap.get("diskFile"));
             // 转码文件
             File destFile = new File(commandMap.get("destFile"));
+            if (!destFile.exists()) {
+                destFile.getParentFile().mkdirs();
+            }
             // 视频码率
             int videoBitrate = Integer.parseInt(commandMap.get("videoBitrate"));
 
