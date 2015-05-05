@@ -84,9 +84,7 @@ public class NodeServerHandler extends IoHandlerAdapter {
             File diskFile = new File(commandMap.get("diskFile"));
             // 转码文件
             File destFile = new File(commandMap.get("destFile"));
-            if (!destFile.exists()) {
-                destFile.getParentFile().mkdirs();
-            }
+
             // 视频码率
             int videoBitrate = Integer.parseInt(commandMap.get("videoBitrate"));
 
@@ -105,20 +103,21 @@ public class NodeServerHandler extends IoHandlerAdapter {
 
             String diskSufix = FileUtils.getFileSufix(diskFile.getName());
             diskSufix = diskSufix.toUpperCase();
-            session.setAttribute("destFile", destFile.getAbsolutePath());
             TranscodeEvent event = (TranscodeEvent) session.getAttribute("transcodeEvent");
+            String fileHash = FileUtils.getHexHash(diskFile);
+            File convertFile = ConvertProviderUtils.getConvertPath(fileHash, diskFile.getName());
             // 视频转码
             if (FileType.isVideo(diskFile.getName())) {
                 // 转码开始
                 ConvertProviderUtils.getBofulConvertProvider().transcodeVideo(new DiskFile(diskFile),
-                        new DiskFile(destFile), width, height, videoBitrate, audioBitrate, event, jobId);
+                        new DiskFile(convertFile), width, height, videoBitrate, audioBitrate, event, jobId);
 
                 // 音频转码
             } else if (FileType.isAudio(diskFile.getName())) {
 
                 // 转码开始
                 ConvertProviderUtils.getBofulConvertProvider().transcodeAudio(new DiskFile(diskFile),
-                        new DiskFile(destFile), audioBitrate, event, jobId);
+                        new DiskFile(convertFile), audioBitrate, event, jobId);
 
                 // 文档转码
             } else if (FileType.isDocument(diskFile.getName()) || diskSufix.equals("PDF") || diskSufix.equals("SWF")) {
@@ -142,16 +141,16 @@ public class NodeServerHandler extends IoHandlerAdapter {
                         if (diskSufix.equals("PDF")) {
                             // 转码开始
                             ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
-                                    new DiskFile(destFile), event, jobId);
+                                    new DiskFile(convertFile), event, jobId);
 
                         } else {
                             // 转码开始
-                            File pdfFile = new File(destFile.getParent(), jobId + ".pdf");
+                            File pdfFile = new File(convertFile.getParent(), fileHash + ".pdf");
                             ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
                                     new DiskFile(pdfFile), null, jobId);
 
                             ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
-                                    new DiskFile(destFile), event, jobId);
+                                    new DiskFile(convertFile), event, jobId);
                         }
                     }
 
@@ -159,21 +158,21 @@ public class NodeServerHandler extends IoHandlerAdapter {
                     if (destSufix.equals("PDF")) {
                         // 转码开始
                         ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
-                                new DiskFile(destFile), event, jobId);
+                                new DiskFile(convertFile), event, jobId);
                     }
                 }
 
                 // 转码开始
                 ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
-                        new DiskFile(destFile), event, jobId);
+                        new DiskFile(convertFile), event, jobId);
 
                 // 图片转码
             } else if (FileType.isImage(diskFile.getName())) {
                 String imageMagickBaseHome = ConvertProviderUtils.getConfig().getHosts().get(0).getParams()
                         .get("imageMagickSearchPath");
-                ImageMagickUtils.compress(diskFile, destFile, imageMagickBaseHome);
+                ImageMagickUtils.compress(diskFile, convertFile, imageMagickBaseHome);
                 convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
-                convertStateProtocol.setMessage(destFile.getAbsolutePath());
+                convertStateProtocol.setMessage(convertFile.getAbsolutePath());
                 session.write(convertStateProtocol);
             }
 
