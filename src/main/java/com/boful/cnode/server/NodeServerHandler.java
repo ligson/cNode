@@ -137,27 +137,18 @@ public class NodeServerHandler extends IoHandlerAdapter {
 
                 } else {
                     // 转码为SWF文件，被转码文件只能是PDF文件
-                    if (destSufix.equals("SWF")) {
-                        if (diskSufix.equals("PDF")) {
-                            // 转码开始
-                            ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
-                                    new DiskFile(convertFile), event, jobId);
-
-                        } else {
-                            // 转码开始
-                            File pdfFile = new File(convertFile.getParent(), fileHash + ".pdf");
-                            ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
-                                    new DiskFile(pdfFile), null, jobId);
-
-                            ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
-                                    new DiskFile(convertFile), event, jobId);
-                        }
-                    }
-
-                    // 转码为PDF文件，被转码文件只能是SWF和PDF以外的文件
-                    if (destSufix.equals("PDF")) {
+                    if (diskSufix.equals("PDF")) {
                         // 转码开始
+                        ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
+                                new DiskFile(convertFile), event, jobId);
+
+                    } else {
+                        // 转码开始
+                        File pdfFile = new File(convertFile.getParent(), fileHash + ".pdf");
                         ConvertProviderUtils.getBofulConvertProvider().transcode2PDF(new DiskFile(diskFile),
+                                new DiskFile(pdfFile), null, jobId);
+
+                        ConvertProviderUtils.getBofulConvertProvider().transcode2SWF(new DiskFile(diskFile),
                                 new DiskFile(convertFile), event, jobId);
                     }
                 }
