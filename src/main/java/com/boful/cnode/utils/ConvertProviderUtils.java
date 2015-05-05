@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+import com.boful.common.file.utils.FileUtils;
 import com.boful.convert.core.ConvertProviderConfig;
 import com.boful.convert.core.impl.BofulConvertProvider;
 
@@ -18,6 +19,8 @@ public class ConvertProviderUtils {
     private static BofulConvertProvider bofulConvertProvider = null;
     private static Logger logger = Logger.getLogger(ConvertProviderUtils.class);
 
+    private static File convertPath = new File("");
+
     public static int[] initServerConfig() {
         int[] config = new int[3];
         try {
@@ -26,7 +29,8 @@ public class ConvertProviderUtils {
                 url = ClassLoader.getSystemResource("config.properties");
             }
             InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
-            //InputStream in = new BufferedInputStream(new FileInputStream(new File("src/main/resources/config.properties")));
+            // InputStream in = new BufferedInputStream(new FileInputStream(new
+            // File("src/main/resources/config.properties")));
             Properties props = new Properties();
             props.load(in);
 
@@ -39,13 +43,22 @@ public class ConvertProviderUtils {
             config[1] = idleTime;
             config[2] = port;
 
+            convertPath = new File(props.getProperty("convert.path"));
+            if (!convertPath.exists()) {
+                convertPath.mkdirs();
+            }
+
             return config;
         } catch (Exception e) {
             logger.debug("配置文件初始化失败...........");
             logger.debug("错误信息：" + e.getMessage());
             return config;
         }
+    }
 
+    public static File getConvertPath(String fileHash, String fileName) {
+        String fileSufix = FileUtils.getFileSufix(fileName);
+        return new File(convertPath, fileHash + "." + fileSufix);
     }
 
     public static boolean initConvertProviderConfig() {
@@ -56,7 +69,7 @@ public class ConvertProviderUtils {
                 url = ClassLoader.getSystemResource("convert.xml");
             }
             config.init(new File(url.getPath()));
-            //config.init(new File("src/main/resources/convert.xml"));
+            // config.init(new File("src/main/resources/convert.xml"));
             logger.debug("配置文件初始化成功...........");
             return true;
         } catch (Exception e) {
