@@ -10,10 +10,10 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
+import com.boful.cnode.event.CNodeTranscodeEvent;
 import com.boful.cnode.utils.ConvertProviderUtils;
 import com.boful.common.file.utils.FileType;
 import com.boful.common.file.utils.FileUtils;
-import com.boful.convert.core.TranscodeEvent;
 import com.boful.convert.core.impl.utils.ImageMagickUtils;
 import com.boful.convert.model.DiskFile;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
@@ -70,14 +70,6 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 return;
             }
 
-            /*String checkMsg = CommandLineUtils.checkCmd(commandMap);
-            if (checkMsg != null) {
-                convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-                convertStateProtocol.setMessage(checkMsg);
-                session.write(convertStateProtocol);
-                return;
-            }*/
-
             // jobId
             String jobId = commandMap.get("jobid");
             // 元文件
@@ -103,7 +95,7 @@ public class NodeServerHandler extends IoHandlerAdapter {
 
             String diskSufix = FileUtils.getFileSufix(diskFile.getName());
             diskSufix = diskSufix.toUpperCase();
-            TranscodeEvent event = (TranscodeEvent) session.getAttribute("transcodeEvent");
+            CNodeTranscodeEvent event = new CNodeTranscodeEvent(session);
             String fileHash = FileUtils.getHexHash(diskFile);
             File convertFile = ConvertProviderUtils.getConvertPath(fileHash, diskFile.getName());
             // 视频转码

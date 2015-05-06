@@ -49,13 +49,8 @@ public class CNodeTranscodeEvent implements TranscodeEvent {
     @Override
     public void onTranscode(DiskFile diskFile, int process, String jobId) {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
-        if (process == 100) {
-            convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
-            convertStateProtocol.setMessage(session.getAttribute("destFile").toString());
-        } else {
-            convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
-            convertStateProtocol.setMessage("文件" + diskFile.getAbsolutePath() + "转码进度:" + process + "%");
-        }
+        convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
+        convertStateProtocol.setMessage("文件" + diskFile.getAbsolutePath() + "转码进度:" + process + "%");
         session.write(convertStateProtocol);
     }
 
