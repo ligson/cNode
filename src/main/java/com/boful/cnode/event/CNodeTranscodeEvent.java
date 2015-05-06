@@ -35,7 +35,7 @@ public class CNodeTranscodeEvent implements TranscodeEvent {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_START);
         convertStateProtocol.setMessage("文件" + diskFile.getAbsolutePath() + "转码开始！");
-        session.write(convertStateProtocol);
+        //session.write(convertStateProtocol);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CNodeTranscodeEvent implements TranscodeEvent {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
         convertStateProtocol.setMessage("文件" + diskFile.getAbsolutePath() + "转码进度:" + process + "%");
-        session.write(convertStateProtocol);
+        // session.write(convertStateProtocol);
     }
 
     @Override
