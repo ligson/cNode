@@ -6,11 +6,11 @@ import com.boful.convert.core.TranscodeEvent;
 import com.boful.convert.model.DiskFile;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
 
-public class AudioTranscodeEvent implements TranscodeEvent {
+public class CNodeTranscodeEvent implements TranscodeEvent {
 
     private IoSession session;
 
-    public AudioTranscodeEvent(IoSession session) {
+    public CNodeTranscodeEvent(IoSession session) {
         this.session = session;
     }
 
