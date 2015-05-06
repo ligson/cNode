@@ -70,13 +70,13 @@ public class NodeServerHandler extends IoHandlerAdapter {
                 return;
             }
 
-            String checkMsg = CommandLineUtils.checkCmd(commandMap);
+            /*String checkMsg = CommandLineUtils.checkCmd(commandMap);
             if (checkMsg != null) {
                 convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
                 convertStateProtocol.setMessage(checkMsg);
                 session.write(convertStateProtocol);
                 return;
-            }
+            }*/
 
             // jobId
             String jobId = commandMap.get("jobid");
