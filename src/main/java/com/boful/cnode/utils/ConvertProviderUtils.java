@@ -22,11 +22,21 @@ public class ConvertProviderUtils {
     private static File convertPath = new File("");
 
     public static int[] initServerConfig() {
+
         int[] config = new int[3];
         try {
             URL url = ClassLoader.getSystemResource("conf/config.properties");
             if (url == null) {
-                url = ClassLoader.getSystemResource("config.properties");
+                ClassLoader classLoader = ConvertProviderConfig.class.getClassLoader();
+                System.out.println(classLoader.getClass().getName());
+                // url = classLoader.getResource("config.properties");
+                File file = new File("./src/main/resources/config.properties");
+                url = file.toURI().toURL();
+            }
+            logger.debug("配置文件路径:" + url);
+            if (url == null) {
+                logger.error("未找到配置文件！");
+                System.exit(-1);
             }
             InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
             // InputStream in = new BufferedInputStream(new FileInputStream(new
